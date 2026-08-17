@@ -40,7 +40,11 @@ jobs:
       - name: Disable Jekyll
         run: touch public/.nojekyll
 
+      # enablement turns Pages on with "GitHub Actions" as the source, so the
+      # first run configures the repository instead of failing on a setting.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
