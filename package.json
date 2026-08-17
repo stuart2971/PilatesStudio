@@ -1,0 +1,16 @@
+{
+  "name": "core-pilates-studio",
+  "version": "1.0.0",
+  "description": "Pilates studio website with class booking, tiered monthly memberships and card checkout",
+  "private": true,
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "build:catalogue": "node scripts/build-catalogue.js"
+  },
+  "keywords": ["pilates", "bookings", "memberships", "stripe"],
+  "license": "MIT"
+}

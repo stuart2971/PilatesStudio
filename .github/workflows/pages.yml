@@ -1,0 +1,57 @@
+# Publishes the static site in public/ to GitHub Pages on every push to main.
+#
+# The booking API needs a Node process and cannot run on Pages, so the deployed
+# site falls back to the in-browser engine in public/assets/js/static-api.js.
+# See the README for what that mode can and cannot do.
+#
+# One-time setup: Settings → Pages → Source → GitHub Actions.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Regenerate the catalogue so the deployed demo always matches lib/seed.js.
+      - name: Build catalogue
+        run: node scripts/build-catalogue.js
+
+      # Pages runs Jekyll by default, which would skip files beginning with "_".
+      - name: Disable Jekyll
+        run: touch public/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

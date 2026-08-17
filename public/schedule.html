@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class Schedule — Core Pilates Studio</title>
+<meta name="description" content="The full Core Pilates Studio timetable. Reformer, mat, sculpt and stretch classes seven days a week, bookable online.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e8a88c'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .day-strip {
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    padding-bottom: .75rem;
+    margin-bottom: 1.6rem;
+    scrollbar-width: thin;
+  }
+  .day-btn {
+    flex: none;
+    min-width: 76px;
+    padding: .7rem .5rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.3;
+    transition: all .18s var(--ease);
+  }
+  .day-btn:hover { border-color: var(--accent); }
+  .day-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .day-btn .dow { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; opacity: .65; }
+  .day-btn .num { font-family: var(--display); font-size: 1.3rem; }
+  .filters { display: flex; gap: .8rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+  .filters select {
+    padding: .55rem .8rem; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--paper); font-size: .85rem;
+  }
+  .slot {
+    display: grid;
+    grid-template-columns: 92px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.1rem .2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .slot:last-child { border-bottom: 0; }
+  .slot-time { font-family: var(--display); font-size: 1.25rem; }
+  .slot-time small { display: block; font-family: var(--sans); font-size: .72rem; color: var(--muted); }
+  .slot-main strong { font-weight: 500; }
+  .slot-main small { display: block; color: var(--muted); font-size: .83rem; }
+  .slot-actions { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; justify-content: flex-end; }
+  @media (max-width: 600px) {
+    .slot { grid-template-columns: 76px 1fr; }
+    .slot-actions { grid-column: 1 / -1; justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">Timetable</p>
+      <h1 style="font-size:clamp(2.2rem,4.5vw,3.1rem)">Class Schedule</h1>
+      <p class="lede">Thirty classes a week. Reserve your spot in a couple of taps.</p>
+    </div>
+  </header>
+
+  <section style="padding-bottom:clamp(4rem,8vw,6rem)">
+    <div class="container">
+      <div id="window-note"></div>
+      <div class="day-strip" id="day-strip"></div>
+      <div class="filters">
+        <select id="filter-class"><option value="">All classes</option></select>
+        <select id="filter-instructor"><option value="">All instructors</option></select>
+        <select id="filter-availability">
+          <option value="">Everything</option>
+          <option value="open">Spots available</option>
+        </select>
+      </div>
+      <div class="panel" id="slots">
+        <div class="skeleton" style="height:340px"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/static-api.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  const cfg = await App.config();
+  let sessions = [];
+  let membership = null;
+  let day = null;
+
+  const $ = (id) => document.getElementById(id);
+
+  async function load() {
+    const data = await App.get('api/sessions');
+    sessions = data.sessions;
+    membership = data.membership;
+    if (!day || !sessions.some((s) => s.date === day)) {
+      day = sessions.length ? sessions[0].date : App.dateKey(new Date());
+    }
+  }
+
+  function renderFilters() {
+    $('filter-class').innerHTML =
+      '<option value="">All classes</option>' +
+      cfg.classTypes.map((c) => `<option value="${c.id}">${App.escapeHtml(c.name)}</option>`).join('');
+    $('filter-instructor').innerHTML =
+      '<option value="">All instructors</option>' +
+      cfg.instructors.map((i) => `<option value="${i.id}">${App.escapeHtml(i.name)}</option>`).join('');
+  }
+
+  function renderDays() {
+    const days = [...new Set(sessions.map((s) => s.date))].slice(0, 21);
+    $('day-strip').innerHTML = days.map((key) => {
+      const d = App.parseDate(key);
+      return `
+        <button class="day-btn ${key === day ? 'active' : ''}" data-day="${key}">
+          <div class="dow">${App.DOW[d.getDay()].slice(0, 3)}</div>
+          <div class="num">${d.getDate()}</div>
+          <div class="dow">${App.MONTHS[d.getMonth()].slice(0, 3)}</div>
+        </button>`;
+    }).join('');
+    $('day-strip').querySelectorAll('[data-day]').forEach((b) =>
+      b.addEventListener('click', () => {
+        day = b.dataset.day;
+        renderDays();
+        renderSlots();
+      })
+    );
+  }
+
+  // Why a class cannot be booked matters to the reader: "already booked" and
+  // "outside your window" are opposite feelings.
+  const blockedLabel = (code) => ({
+    booked: 'Booked',
+    waitlisted: 'On waitlist',
+    window: 'Not yet open',
+    full: 'Members only',
+    clash: 'Overlaps a booking',
+    started: 'Started',
+  }[code] || 'Unavailable');
+
+  function renderSlots() {
+    const classFilter = $('filter-class').value;
+    const instructorFilter = $('filter-instructor').value;
+    const availabilityFilter = $('filter-availability').value;
+
+    const list = sessions.filter((s) =>
+      s.date === day &&
+      (!classFilter || s.classTypeId === classFilter) &&
+      (!instructorFilter || s.instructorId === instructorFilter) &&
+      (!availabilityFilter || !s.full)
+    );
+
+    if (!list.length) {
+      $('slots').innerHTML = `<p class="muted" style="padding:2rem 0;text-align:center;margin:0">
+        No classes match those filters on ${App.formatDate(day)}.</p>`;
+      return;
+    }
+
+    $('slots').innerHTML = list.map((s) => {
+      const v = s.verdict;
+      const blocked = v && !v.allowed;
+      const label = s.full ? 'Join Waitlist' : 'Book';
+      const badge = s.full
+        ? '<span class="pill pill-warn">Full</span>'
+        : s.spotsLeft <= 3
+          ? `<span class="pill pill-warn">${s.spotsLeft} left</span>`
+          : `<span class="pill pill-ok">${s.spotsLeft} spots</span>`;
+      return `
+        <div class="slot">
+          <div class="slot-time">${App.formatTime(s.time).replace(' ', '<small>') + '</small>'}</div>
+          <div class="slot-main">
+            <strong>${App.escapeHtml(s.className)}</strong>
+            <small>${App.escapeHtml(s.instructor)} · ${s.duration} min · ${App.escapeHtml(s.level)}</small>
+          </div>
+          <div class="slot-actions">
+            ${badge}
+            ${
+              blocked
+                ? `<span class="pill ${v.code === 'booked' || v.code === 'waitlisted' ? 'pill-ok' : ''}"
+                         title="${App.escapeHtml(v.reason)}">${blockedLabel(v.code)}</span>`
+                : `<a class="btn btn-sm ${s.full ? 'btn-ghost' : ''}"
+                      href="book.html?session=${encodeURIComponent(s.id)}">${label}</a>`
+            }
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderNote() {
+    $('window-note').innerHTML = membership
+      ? `<div class="callout callout-accent" style="margin-bottom:1.4rem">
+           <strong>${App.escapeHtml(membership.plan.name)} membership</strong> —
+           ${membership.unlimited ? 'unlimited classes' : `${membership.creditsLeft} classes left this cycle`},
+           booking up to ${membership.plan.bookingWindowDays} days ahead.
+           ${membership.plan.priorityWaitlist ? 'Priority waitlist included.' : ''}
+         </div>`
+      : `<div class="callout" style="margin-bottom:1.4rem">
+           Classes are $${cfg.dropIn.price} as a drop-in, or included with a
+           <a class="link-accent" href="memberships.html">monthly membership</a> from $${cfg.plans[0].price}.
+         </div>`;
+  }
+
+  await load();
+  renderFilters();
+  renderDays();
+  renderNote();
+  renderSlots();
+
+  ['filter-class', 'filter-instructor', 'filter-availability'].forEach((id) =>
+    $(id).addEventListener('change', renderSlots)
+  );
+
+  App.onUserChange(async () => {
+    await load();
+    renderNote();
+    renderSlots();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classes — Core Pilates Studio</title>
+<meta name="description" content="Reformer Pilates, Mat Pilates, Sculpt & Tone and Stretch & Mobility. Small classes, expert instructors, all levels welcome.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e8a88c'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .class-detail {
+    display: grid;
+    grid-template-columns: 5fr 6fr;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    padding: clamp(2rem, 5vw, 3.5rem) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .class-detail:last-child { border-bottom: 0; }
+  .class-detail:nth-child(even) .class-detail-media { order: 2; }
+  @media (max-width: 780px) {
+    .class-detail { grid-template-columns: 1fr; }
+    .class-detail:nth-child(even) .class-detail-media { order: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">What we teach</p>
+      <h1 style="font-size:clamp(2.2rem,4.5vw,3.1rem)">Our Classes</h1>
+      <p class="lede">
+        Four formats, one method. Every class caps at the number of reformers on the floor,
+        so you are always within arm's reach of your instructor.
+      </p>
+    </div>
+  </header>
+
+  <section class="section-sm">
+    <div class="container" id="class-details">
+      <div class="skeleton" style="height:300px;margin-bottom:1.5rem"></div>
+      <div class="skeleton" style="height:300px"></div>
+    </div>
+  </section>
+
+  <section class="section band-dark">
+    <div class="container split">
+      <div>
+        <h2>New to Pilates?</h2>
+        <p class="lede">
+          Start with Mat Pilates or an all-levels Reformer class. Tell your instructor it is
+          your first session and arrive ten minutes early — they will set your springs and
+          walk you through the machine before anyone else is on it.
+        </p>
+        <a class="btn" href="book.html">Book Your First Class</a>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <svg class="icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <h3>Arrive 10 minutes early</h3>
+          <p>Time to sign in, meet your instructor and settle.</p>
+        </div>
+        <div class="feature">
+          <svg class="icon-lg" viewBox="0 0 24 24"><path d="M4 20V14M10 20V9M16 20V12M22 20V5"/></svg>
+          <h3>Wear grip socks</h3>
+          <p>Required on the reformer. We sell them at the desk.</p>
+        </div>
+        <div class="feature">
+          <svg class="icon-lg" viewBox="0 0 24 24"><path d="M16 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.9"/></svg>
+          <h3>Max 10 on reformers</h3>
+          <p>Sixteen on mats. Small enough to be corrected.</p>
+        </div>
+        <div class="feature">
+          <svg class="icon-lg" viewBox="0 0 24 24"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l8.8 8.7 8.8-8.7a5 5 0 0 0 0-7.1z"/></svg>
+          <h3>Tell us about injuries</h3>
+          <p>Every exercise has a modification. Just ask.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/static-api.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  const cfg = await App.config();
+  const { sessions } = await App.get('api/sessions');
+
+  document.getElementById('class-details').innerHTML = cfg.classTypes.map((c) => {
+    const next = sessions.filter((s) => s.classTypeId === c.id).slice(0, 3);
+    return `
+      <article class="class-detail reveal">
+        <div class="class-detail-media">
+          <div class="photo ratio-4x3" style="border-radius:var(--radius-lg)">
+            <img src="assets/photos/${c.image}.svg" alt="${App.escapeHtml(c.name)}">
+          </div>
+        </div>
+        <div>
+          <h2 style="font-size:clamp(1.6rem,3vw,2.2rem)">${App.escapeHtml(c.name)}</h2>
+          <div class="meta-row" style="border-top:0;border-bottom:1px solid var(--line);
+               margin:0 0 1.2rem;padding:0 0 .9rem">
+            <span>${App.icon('clock')} ${c.duration} min</span>
+            <span>${App.icon('level')} ${App.escapeHtml(c.level)}</span>
+          </div>
+          <p class="muted">${App.escapeHtml(c.description)}</p>
+          ${
+            next.length
+              ? `<p class="form-note" style="margin-bottom:1.2rem">
+                   Next: ${next.map((s) => `${App.relativeDay(s.date)} ${App.formatTime(s.time)}`).join(' · ')}
+                 </p>`
+              : ''
+          }
+          <div class="row">
+            <a class="btn btn-sm" href="book.html?class=${c.id}">Book ${App.escapeHtml(c.name)}</a>
+            <a class="link-accent" href="schedule.html">See all times
+              <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+
+  App.watchReveals();
+})();
+</script>
+</body>
+</html>

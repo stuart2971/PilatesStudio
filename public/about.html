@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Core Pilates Studio</title>
+<meta name="description" content="A ten-reformer studio in Toronto built around small classes, careful teaching and a community that knows your name.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e8a88c'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main>
+  <header class="page-head">
+    <div class="container-narrow">
+      <p class="eyebrow">Our Studio</p>
+      <h1 style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Strength, taught carefully</h1>
+      <p class="lede" style="max-width:52ch">
+        Core Pilates opened in 2018 with four reformers and a stubborn belief that people
+        improve faster when someone is actually watching them move.
+      </p>
+    </div>
+  </header>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="photo ratio-4x3" style="border-radius:var(--radius-lg);max-height:460px">
+        <img src="assets/photos/studio.svg" alt="The Core Pilates Studio floor">
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div class="reveal">
+        <h2>How we teach</h2>
+      </div>
+      <div class="stack">
+        <p class="reveal">
+          Classes cap at ten on the reformers and sixteen on the mats. That number is not a
+          marketing decision — it is the largest group one instructor can genuinely correct in
+          fifty minutes. If a class looks full on the schedule, it is because the room is full,
+          not because we are holding spots back.
+        </p>
+        <p class="reveal">
+          Every instructor here holds a comprehensive certification and keeps teaching hours on
+          the floor rather than behind a desk. Between them they cover rehabilitation, pre and
+          postnatal, strength and conditioning, and classical repertoire. Tell them about a knee,
+          a shoulder or a bad week and the sequence changes for you, quietly, without a fuss.
+        </p>
+        <p class="reveal">
+          Memberships are monthly and cancel from your account in two clicks. We would rather
+          you came back because the classes are good than because a contract said you had to.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band-dark">
+    <div class="container">
+      <h2 class="center" style="margin-bottom:2.5rem">Your instructors</h2>
+      <div class="card-grid" id="instructors"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="panel spread" style="padding:2.5rem">
+        <div>
+          <h2 style="margin-bottom:.3rem">Come and see the place</h2>
+          <p class="muted" style="margin:0">123 Wellness Way, Toronto · Mon–Fri 6am–8pm</p>
+        </div>
+        <div class="row">
+          <a class="btn" href="book.html">Book a Class</a>
+          <a class="btn btn-ghost" href="contact.html">Get in Touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/static-api.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  const cfg = await App.config();
+  document.getElementById('instructors').innerHTML = cfg.instructors.map((i, n) => `
+    <article class="reveal">
+      <div class="photo ratio-1x1" style="border-radius:var(--radius);margin-bottom:1rem">
+        <img src="assets/photos/${n % 2 ? 'founder' : 'studio'}.svg" alt="${App.escapeHtml(i.name)}">
+      </div>
+      <h3 style="font-size:1.15rem;color:#fff">${App.escapeHtml(i.name)}</h3>
+      <p style="color:rgba(255,255,255,.65);font-size:.9rem">${App.escapeHtml(i.bio)}</p>
+    </article>`).join('');
+  App.watchReveals();
+})();
+</script>
+</body>
+</html>

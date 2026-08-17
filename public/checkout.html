@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout — Core Pilates Studio</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e8a88c'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main>
+  <section class="section">
+    <div class="container" style="max-width:940px">
+      <div class="book-layout" id="checkout-layout">
+        <section class="panel">
+          <div class="panel-head"><h1 style="font-size:1.35rem">Payment</h1></div>
+          <div id="pay-body"><div class="skeleton" style="height:280px"></div></div>
+        </section>
+        <aside class="panel" id="order-side">
+          <div class="skeleton" style="height:200px"></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/static-api.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  const paymentId = new URLSearchParams(location.search).get('payment');
+  const body = document.getElementById('pay-body');
+  const side = document.getElementById('order-side');
+  const cfg = await App.config();
+
+  if (!paymentId) {
+    body.innerHTML = `<div class="form-error">No payment to complete.</div>
+      <a class="btn btn-ghost" href="memberships.html">Back to memberships</a>`;
+    side.remove();
+    return;
+  }
+
+  await App.refresh();
+
+  let data;
+  try {
+    data = await App.get('api/checkout/payment?id=' + encodeURIComponent(paymentId));
+  } catch (err) {
+    body.innerHTML = `<div class="form-error">${App.escapeHtml(err.message)}</div>
+      <a class="btn btn-ghost" href="index.html">Back to the studio</a>`;
+    side.remove();
+    return;
+  }
+
+  const { payment, plan, session } = data;
+
+  side.innerHTML = `
+    <div class="panel-head"><h2 style="font-size:1.1rem">Order Summary</h2></div>
+    <div class="summary">
+      <div class="summary-row">
+        <span>${plan ? App.escapeHtml(plan.name) + ' membership' : App.escapeHtml(session ? session.className : 'Class')}</span>
+        <span>$${payment.amount}</span>
+      </div>
+      ${plan ? `<div class="summary-row"><span>Billing</span><span>Monthly, recurring</span></div>` : ''}
+      ${session ? `<div class="summary-row"><span>When</span><span>${App.formatDate(session.date, 'short')} · ${App.formatTime(session.time)}</span></div>` : ''}
+      ${session ? `<div class="summary-row"><span>Instructor</span><span>${App.escapeHtml(session.instructor)}</span></div>` : ''}
+      <div class="summary-row"><span>Tax</span><span>Included</span></div>
+      <div class="summary-row total"><span>Total ${plan ? 'today' : ''}</span><span>$${payment.amount} ${payment.currency}</span></div>
+    </div>
+    ${plan ? `<p class="form-note" style="margin-top:1rem">
+        Renews at $${plan.price}/month until cancelled. Cancel any time from your account —
+        access continues to the end of the paid period.
+      </p>` : ''}`;
+
+  if (payment.status === 'paid') {
+    body.innerHTML = `<div class="callout callout-accent">This payment is already complete.</div>
+      <a class="btn" style="margin-top:1rem" href="account.html">Go to my account</a>`;
+    return;
+  }
+
+  body.innerHTML = `
+    <div class="callout callout-warn" style="margin-bottom:1.4rem">
+      <strong>Demo mode.</strong> No card is charged and no card number is stored — only the
+      last four digits, so your receipt has something to show. Add
+      <code>STRIPE_SECRET_KEY</code> to <code>.env</code> to switch this flow to real Stripe Checkout.
+    </div>
+    <div class="form-error hidden" id="pay-error"></div>
+    <form id="pay-form">
+      <label class="field"><span>Name on card</span>
+        <input name="name" autocomplete="cc-name" required value="${App.escapeHtml((App.state.me && App.state.me.user) ? App.state.me.user.name : '')}"></label>
+      <label class="field"><span>Card number</span>
+        <input name="number" inputmode="numeric" autocomplete="cc-number" required
+               placeholder="4242 4242 4242 4242" maxlength="23"></label>
+      <div class="field-row">
+        <label class="field"><span>Expiry</span>
+          <input name="expiry" inputmode="numeric" autocomplete="cc-exp" required placeholder="12 / 28" maxlength="7"></label>
+        <label class="field"><span>Security code</span>
+          <input name="cvc" inputmode="numeric" autocomplete="cc-csc" required placeholder="123" maxlength="4"></label>
+      </div>
+      <label class="field"><span>Postal code</span>
+        <input name="postal" autocomplete="postal-code" placeholder="M5V 2T6"></label>
+      <button class="btn btn-block" type="submit" style="margin-top:.6rem">
+        Pay $${payment.amount} ${payment.currency}
+      </button>
+      <p class="form-note" style="margin-top:1rem;text-align:center">
+        Payments are processed securely. You can cancel a membership at any time.
+      </p>
+    </form>`;
+
+  // Light input polish — grouping digits makes typos obvious before submitting.
+  const form = document.getElementById('pay-form');
+  form.number.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 19).replace(/(.{4})/g, '$1 ').trim();
+  });
+  form.expiry.addEventListener('input', (e) => {
+    const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+    e.target.value = v.length > 2 ? `${v.slice(0, 2)} / ${v.slice(2)}` : v;
+  });
+  form.cvc.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorBox = document.getElementById('pay-error');
+    const btn = form.querySelector('button');
+    const label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+    errorBox.classList.add('hidden');
+
+    try {
+      const card = Object.fromEntries(new FormData(form));
+      const result = await App.post('api/checkout/confirm', { paymentId, card });
+      App.setMe(result);
+      location.href = plan ? `account.html?welcome=${plan.id}` : 'account.html?booked=1';
+    } catch (err) {
+      errorBox.textContent = err.message;
+      errorBox.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  });
+})();
+</script>
+</body>
+</html>

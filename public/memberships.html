@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memberships &amp; Pricing — Core Pilates Studio</title>
+<meta name="description" content="Monthly Pilates memberships from $79. Compare class credits, booking windows and priority waitlist access, or pay per class with a drop-in.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e8a88c'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+    min-width: 620px;
+  }
+  .compare th, .compare td {
+    padding: .85rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .compare th:first-child, .compare td:first-child {
+    text-align: left;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .compare thead th {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--ink);
+  }
+  .compare tbody tr:hover { background: var(--sand); }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tick { color: var(--ok); font-weight: 600; }
+  .cross { color: #c4b8ab; }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main>
+  <header class="page-head center">
+    <div class="container-narrow">
+      <p class="eyebrow">Pricing Plans</p>
+      <h1 style="font-size:clamp(2.4rem,5vw,3.6rem)">Memberships</h1>
+      <p class="lede">More practice. More benefits. More you.</p>
+    </div>
+  </header>
+
+  <section class="section-sm">
+    <div class="container">
+      <div id="membership-status"></div>
+      <div class="plan-grid" id="plan-grid">
+        <div class="skeleton" style="height:420px"></div>
+        <div class="skeleton" style="height:420px"></div>
+        <div class="skeleton" style="height:420px"></div>
+        <div class="skeleton" style="height:420px"></div>
+      </div>
+      <p class="plan-note">
+        All memberships are recurring monthly. Cancel anytime from your account —
+        your classes stay available until the end of the period you have paid for.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="center">What each tier unlocks</h2>
+      <p class="lede center" style="margin-bottom:2.5rem">
+        Booking privileges are enforced automatically when you reserve a class.
+      </p>
+      <div class="table-scroll panel">
+        <table class="compare" id="compare"></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band-dark">
+    <div class="container-narrow">
+      <h2 class="center">Membership questions</h2>
+      <div class="stack" style="margin-top:2.5rem">
+        <div>
+          <h3 style="font-family:var(--sans);font-size:1rem;font-weight:600">What is a booking window?</h3>
+          <p class="muted">
+            How far into the future your tier can reserve a spot. Starter members book
+            7 days out, Essential 14, Unlimited 30. The schedule always shows every class —
+            anything past your window is simply marked as not yet open to you.
+          </p>
+        </div>
+        <div>
+          <h3 style="font-family:var(--sans);font-size:1rem;font-weight:600">What happens when a class is full?</h3>
+          <p class="muted">
+            Members join the waitlist. When someone cancels, the spot goes to the first person
+            in the queue — Essential and Unlimited members are placed ahead of everyone else.
+            A credit is only spent if you are actually promoted into the class, and waitlist spots
+            are held for members with classes remaining rather than sold as drop-ins.
+          </p>
+        </div>
+        <div>
+          <h3 style="font-family:var(--sans);font-size:1rem;font-weight:600">What if I run out of classes?</h3>
+          <p class="muted">
+            Keep booking at your member rate — $22 on Starter, $20 on Essential, instead of
+            the $28 drop-in price. Your allowance resets on your renewal date.
+          </p>
+        </div>
+        <div>
+          <h3 style="font-family:var(--sans);font-size:1rem;font-weight:600">Can I cancel a booking?</h3>
+          <p class="muted">
+            Yes, and your class credit comes straight back if you cancel more than 12 hours
+            before the start time. Inside 12 hours the credit is used — the spot can rarely be
+            filled that late, and someone on the waitlist missed out.
+          </p>
+        </div>
+        <div>
+          <h3 style="font-family:var(--sans);font-size:1rem;font-weight:600">Can I switch plans?</h3>
+          <p class="muted">
+            Any time. Choosing a new plan replaces the old one immediately and starts a fresh
+            monthly cycle with a full allowance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/static-api.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(async () => {
+  const cfg = await App.config();
+  const all = [...cfg.plans, cfg.dropIn];
+  const grid = document.getElementById('plan-grid');
+  const statusHost = document.getElementById('membership-status');
+
+  const check = `<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>`;
+
+  function render() {
+    const m = App.state.me && App.state.me.membership;
+    const currentId = m ? m.plan.id : null;
+
+    grid.innerHTML = all.map((p) => {
+      const isCurrent = p.id === currentId;
+      const featured = !!p.badge && !isCurrent;
+      return `
+        <article class="plan ${featured ? 'featured' : ''} ${isCurrent ? 'current' : ''}">
+          ${p.badge && !isCurrent ? `<span class="plan-badge">${p.badge}</span>` : ''}
+          ${isCurrent ? `<span class="plan-badge" style="background:#f0f8f3;border-color:#bcd9c8;color:var(--ok)">Your Plan</span>` : ''}
+          <h3>${p.name}</h3>
+          <p class="plan-tagline">${p.tagline}</p>
+          <div class="plan-price">$${p.price}<small>/${p.interval === 'month' ? 'month' : 'class'}</small></div>
+          <ul class="plan-features">
+            ${p.features.map((f) => `<li>${check}<span>${App.escapeHtml(f)}</span></li>`).join('')}
+          </ul>
+          ${
+            p.oneOff
+              ? `<a class="btn btn-ghost btn-block" href="book.html">Book Now</a>`
+              : isCurrent
+                ? `<a class="btn btn-ghost btn-block" href="account.html">Manage Plan</a>`
+                : `<button class="btn ${featured ? '' : 'btn-ghost'} btn-block" data-plan="${p.id}">
+                     ${currentId ? 'Switch to ' + p.name : 'Choose Plan'}
+                   </button>`
+          }
+        </article>`;
+    }).join('');
+
+    grid.querySelectorAll('[data-plan]').forEach((btn) => {
+      btn.addEventListener('click', () => choose(btn, btn.dataset.plan));
+    });
+
+    statusHost.innerHTML = m
+      ? `<div class="callout callout-accent spread" style="margin-bottom:1.6rem">
+           <span>
+             You are on <strong>${m.plan.name}</strong> —
+             ${m.unlimited ? 'unlimited classes' : `${m.creditsLeft} of ${m.creditsTotal} classes left`}
+             this cycle, renewing ${App.formatDate(m.periodEndDate, 'short')}.
+           </span>
+           <a class="btn btn-sm btn-dark" href="account.html">Manage</a>
+         </div>`
+      : '';
+  }
+
+  async function choose(btn, planId) {
+    const session = await App.requireAuth('signup');
+    if (!session) return;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Opening checkout…';
+    try {
+      const { url } = await App.post('api/checkout/plan', { planId });
+      location.href = url;
+    } catch (err) {
+      App.toast(err.message, 'bad');
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }
+
+  // Privilege matrix, generated from the same plan records the server enforces.
+  const rows = [
+    ['Classes included', (p) =>
+      p.oneOff ? 'Pay per class' : p.monthlyCredits === null ? 'Unlimited' : `${p.monthlyCredits} / month`],
+    ['Book in advance', (p) => `${p.bookingWindowDays} days`],
+    ['Priority waitlist', (p) => p.priorityWaitlist ? `<span class="tick">Yes</span>` : `<span class="cross">—</span>`],
+    ['Extra class rate', (p) => p.monthlyCredits === null ? 'Included' : `$${p.dropInRate}`],
+    ['Guest passes', (p) => p.guestPassesPerMonth ? `${p.guestPassesPerMonth} / month` : `<span class="cross">—</span>`],
+    ['Free cancellation', (p) => `${p.lateCancelHours}h before`],
+    ['Commitment', (p) => p.oneOff ? 'None' : 'Monthly, cancel anytime'],
+  ];
+
+  document.getElementById('compare').innerHTML = `
+    <thead><tr><th></th>${all.map((p) => `<th>${p.name}</th>`).join('')}</tr></thead>
+    <tbody>
+      ${rows.map(([label, fn]) =>
+        `<tr><td>${label}</td>${all.map((p) => `<td>${fn(p)}</td>`).join('')}</tr>`
+      ).join('')}
+    </tbody>`;
+
+  App.onUserChange(render);
+  render();
+
+  if (new URLSearchParams(location.search).get('cancelled')) {
+    App.toast('Checkout cancelled — nothing was charged.');
+  }
+})();
+</script>
+</body>
+</html>

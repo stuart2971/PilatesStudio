@@ -1,0 +1,27 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' preserveAspectRatio='xMidYMid slice'>
+  <defs>
+    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='#d9c0ad'/><stop offset='.55' stop-color='#bd947c'/><stop offset='1' stop-color='#8e6350'/>
+    </linearGradient>
+    <radialGradient id='glow' cx='.72' cy='.24' r='.7'>
+      <stop offset='0' stop-color='#f2e4da' stop-opacity='.85'/>
+      <stop offset='1' stop-color='#f2e4da' stop-opacity='0'/>
+    </radialGradient>
+    <filter id='soft'><feGaussianBlur stdDeviation='26'/></filter>
+  </defs>
+  <rect width='800' height='600' fill='url(#g)'/>
+  <rect width='800' height='600' fill='url(#glow)'/>
+  <g filter='url(#soft)' opacity='.34'>
+    <ellipse cx='170' cy='470' rx='230' ry='120' fill='#f2e4da'/>
+    <ellipse cx='640' cy='150' rx='190' ry='150' fill='#8e6350'/>
+  </g>
+  <g fill='none' stroke='#f2e4da' stroke-opacity='.28' stroke-width='1.5'>
+    <path d='M-40 430 C 180 360, 420 470, 860 380'/>
+    <path d='M-40 470 C 190 400, 430 510, 860 420'/>
+    <path d='M-40 510 C 200 440, 440 550, 860 460'/>
+  </g>
+  <g fill='none' stroke='#f2e4da' stroke-opacity='.4' stroke-width='2' stroke-linecap='round'>
+    <path d='M250 300 h300'/><path d='M270 300 v40'/><path d='M530 300 v40'/>
+    <circle cx='400' cy='250' r='34'/>
+  </g>
+</svg>

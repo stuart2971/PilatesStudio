@@ -1,0 +1,374 @@
+{
+  "generatedAt": "2026-08-17T17:37:55.460Z",
+  "studio": {
+    "name": "Core Pilates Studio",
+    "tagline": "Stronger body. Calmer mind.",
+    "address": "123 Wellness Way, Toronto, ON",
+    "phone": "(416) 123-4567",
+    "email": "hello@corepilates.com",
+    "hours": "Mon–Fri 6am–8pm · Sat–Sun 8am–1pm",
+    "currency": "CAD",
+    "scheduleHorizonDays": 45
+  },
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "tagline": "4 Classes / Month",
+      "price": 79,
+      "interval": "month",
+      "monthlyCredits": 4,
+      "bookingWindowDays": 7,
+      "priorityWaitlist": false,
+      "dropInRate": 22,
+      "guestPassesPerMonth": 0,
+      "lateCancelHours": 12,
+      "features": [
+        "4 classes per month",
+        "Member rates on extra classes",
+        "Book up to 7 days in advance",
+        "Cancel anytime"
+      ]
+    },
+    {
+      "id": "essential",
+      "name": "Essential",
+      "tagline": "8 Classes / Month",
+      "price": 139,
+      "interval": "month",
+      "monthlyCredits": 8,
+      "bookingWindowDays": 14,
+      "priorityWaitlist": true,
+      "dropInRate": 20,
+      "guestPassesPerMonth": 1,
+      "lateCancelHours": 12,
+      "badge": "Most Popular",
+      "features": [
+        "8 classes per month",
+        "Member rates on extra classes",
+        "Book up to 14 days in advance",
+        "Priority waitlist",
+        "1 guest pass per month"
+      ]
+    },
+    {
+      "id": "unlimited",
+      "name": "Unlimited",
+      "tagline": "Unlimited Classes",
+      "price": 199,
+      "interval": "month",
+      "monthlyCredits": null,
+      "bookingWindowDays": 30,
+      "priorityWaitlist": true,
+      "dropInRate": 0,
+      "guestPassesPerMonth": 2,
+      "lateCancelHours": 12,
+      "features": [
+        "Unlimited classes",
+        "Workshops at member rates",
+        "Book up to 30 days in advance",
+        "Priority waitlist",
+        "2 guest passes per month"
+      ]
+    }
+  ],
+  "dropIn": {
+    "id": "dropin",
+    "name": "Drop-In",
+    "tagline": "Single Class",
+    "price": 28,
+    "interval": "class",
+    "monthlyCredits": 0,
+    "bookingWindowDays": 5,
+    "priorityWaitlist": false,
+    "dropInRate": 28,
+    "guestPassesPerMonth": 0,
+    "lateCancelHours": 12,
+    "oneOff": true,
+    "features": [
+      "1 class",
+      "No commitment",
+      "Book up to 5 days ahead",
+      "Flexible scheduling"
+    ]
+  },
+  "classTypes": [
+    {
+      "id": "reformer",
+      "name": "Reformer Pilates",
+      "duration": 50,
+      "level": "All Levels",
+      "blurb": "Full-body strength, flexibility and core control.",
+      "description": "Our signature class on the reformer. Spring resistance builds strength without impact, while the moving carriage asks your deep core to stabilise every repetition. Expect a full-body sequence that leaves you taller, longer and steadier on your feet.",
+      "image": "reformer"
+    },
+    {
+      "id": "mat",
+      "name": "Mat Pilates",
+      "duration": 45,
+      "level": "All Levels",
+      "blurb": "Strengthen, lengthen and improve mobility.",
+      "description": "Classical mat work with small props. No machine, no intimidation, just precise movement and breath. A brilliant place to start, and the class experienced members come back to when they want to feel their technique clearly.",
+      "image": "mat"
+    },
+    {
+      "id": "sculpt",
+      "name": "Sculpt & Tone",
+      "duration": 50,
+      "level": "Intermediate",
+      "blurb": "Pilates-inspired class focused on strength and endurance.",
+      "description": "Higher tempo, heavier springs, light weights. Pilates principles applied to a strength and endurance format. You should be comfortable on the reformer before joining.",
+      "image": "sculpt"
+    },
+    {
+      "id": "stretch",
+      "name": "Stretch & Mobility",
+      "duration": 45,
+      "level": "All Levels",
+      "blurb": "Release tension and restore range of motion.",
+      "description": "A slower, restorative session using the reformer, straps and foam rollers to open hips, shoulders and spine. The perfect counterweight to a heavy training week or a desk job.",
+      "image": "stretch"
+    }
+  ],
+  "instructors": [
+    {
+      "id": "maya",
+      "name": "Maya Lin",
+      "bio": "Studio founder. 12 years teaching, classical training."
+    },
+    {
+      "id": "sofia",
+      "name": "Sofia Reyes",
+      "bio": "Reformer specialist with a rehab background."
+    },
+    {
+      "id": "jordan",
+      "name": "Jordan Blake",
+      "bio": "Strength and conditioning meets classical Pilates."
+    },
+    {
+      "id": "elise",
+      "name": "Elise Tan",
+      "bio": "Mobility, breath work and pre/postnatal certified."
+    }
+  ],
+  "scheduleTemplate": [
+    {
+      "day": 1,
+      "time": "06:30",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 1,
+      "time": "09:15",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 1,
+      "time": "12:00",
+      "classTypeId": "mat",
+      "instructorId": "elise",
+      "capacity": 16
+    },
+    {
+      "day": 1,
+      "time": "17:30",
+      "classTypeId": "sculpt",
+      "instructorId": "jordan",
+      "capacity": 10
+    },
+    {
+      "day": 1,
+      "time": "18:45",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 2,
+      "time": "06:30",
+      "classTypeId": "sculpt",
+      "instructorId": "jordan",
+      "capacity": 10
+    },
+    {
+      "day": 2,
+      "time": "09:15",
+      "classTypeId": "mat",
+      "instructorId": "elise",
+      "capacity": 16
+    },
+    {
+      "day": 2,
+      "time": "12:00",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 2,
+      "time": "17:30",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 2,
+      "time": "18:45",
+      "classTypeId": "stretch",
+      "instructorId": "elise",
+      "capacity": 12
+    },
+    {
+      "day": 3,
+      "time": "06:30",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 3,
+      "time": "09:15",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 3,
+      "time": "12:00",
+      "classTypeId": "sculpt",
+      "instructorId": "jordan",
+      "capacity": 10
+    },
+    {
+      "day": 3,
+      "time": "17:30",
+      "classTypeId": "mat",
+      "instructorId": "elise",
+      "capacity": 16
+    },
+    {
+      "day": 3,
+      "time": "18:45",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 4,
+      "time": "06:30",
+      "classTypeId": "mat",
+      "instructorId": "elise",
+      "capacity": 16
+    },
+    {
+      "day": 4,
+      "time": "09:15",
+      "classTypeId": "sculpt",
+      "instructorId": "jordan",
+      "capacity": 10
+    },
+    {
+      "day": 4,
+      "time": "12:00",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 4,
+      "time": "17:30",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 4,
+      "time": "18:45",
+      "classTypeId": "stretch",
+      "instructorId": "elise",
+      "capacity": 12
+    },
+    {
+      "day": 5,
+      "time": "06:30",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 5,
+      "time": "09:15",
+      "classTypeId": "sculpt",
+      "instructorId": "jordan",
+      "capacity": 10
+    },
+    {
+      "day": 5,
+      "time": "12:00",
+      "classTypeId": "mat",
+      "instructorId": "elise",
+      "capacity": 16
+    },
+    {
+      "day": 5,
+      "time": "17:30",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 6,
+      "time": "08:00",
+      "classTypeId": "reformer",
+      "instructorId": "maya",
+      "capacity": 10
+    },
+    {
+      "day": 6,
+      "time": "09:15",
+      "classTypeId": "sculpt",
+      "instructorId": "jordan",
+      "capacity": 10
+    },
+    {
+      "day": 6,
+      "time": "10:30",
+      "classTypeId": "mat",
+      "instructorId": "elise",
+      "capacity": 16
+    },
+    {
+      "day": 6,
+      "time": "11:45",
+      "classTypeId": "stretch",
+      "instructorId": "sofia",
+      "capacity": 12
+    },
+    {
+      "day": 0,
+      "time": "09:00",
+      "classTypeId": "stretch",
+      "instructorId": "elise",
+      "capacity": 12
+    },
+    {
+      "day": 0,
+      "time": "10:15",
+      "classTypeId": "reformer",
+      "instructorId": "sofia",
+      "capacity": 10
+    },
+    {
+      "day": 0,
+      "time": "11:30",
+      "classTypeId": "mat",
+      "instructorId": "maya",
+      "capacity": 16
+    }
+  ]
+}
