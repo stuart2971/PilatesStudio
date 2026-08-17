@@ -134,10 +134,18 @@ A banner says so on every page. For a real studio, deploy `server.js` to any hos
 that runs Node (Render, Railway, Fly, a VPS) and the same front end talks to it
 with no changes.
 
-`.github/workflows/pages.yml` publishes `public/` on every push to `main`. It
-enables Pages itself on the first run, so no repository setting needs changing;
-if that step is blocked by org policy, set **Settings → Pages → Source** to
-**GitHub Actions** by hand and re-run the workflow.
+`.github/workflows/pages.yml` publishes `public/` on every push to `main`.
+
+**One-time setup, needed before the first deploy can succeed:**
+
+1. Open **Settings → Pages**.
+2. Under **Build and deployment → Source**, choose **GitHub Actions**.
+3. Open **Actions**, pick the latest *Deploy to GitHub Pages* run and press
+   **Re-run all jobs** (or push any commit).
+
+The workflow asks GitHub to turn Pages on by itself, but that API call is
+refused on some accounts, so the switch above may have to be flipped by hand.
+Once Pages exists, every later push deploys with no further steps.
 
 ---
 
